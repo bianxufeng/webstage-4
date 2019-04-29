@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>9*9</title>
+    <style>
+        li {
+            list-style: none;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+    <div id="app">
+        <h3>九九乘法表</h3>
+        <ul>
+            <li v-for="i in 9">
+                <span v-for="j in i" style="margin-right:10px">
+                    {{j}} * {{i}} = {{j*i}}
+                </span>
+                <br />
+            </li>
+        </ul>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: "#app",
+            data: {
+            }
+        })
+    </script>
+</body>
+</html>
