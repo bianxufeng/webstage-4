@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>发表评论</title>
+    <style>
+        li {
+            list-style: none;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+    <div id="app">
+        <h3>发表评论</h3>
+        <div v-if="list.length>0">
+            <ul>
+                <li v-for="(item,index) in list">
+                    {{item}} <button v-on:click="delpub(index)">删除</button>
+                </li>
+            </ul>
+        </div>
+        <div v-else>
+            现在还没有评论
+        </div>
+        <hr />
+        <textarea 
+            cols="30" 
+            rows="10" 
+            v-model="text"
+            @keydown.ctrl.enter="send"
+            @keydown.esc="clear"
+        >
+        </textarea>
+        <button v-on:click="publish">发表</button><br />
+        <span>ctrl+enter: 发送<br />esc: 表空</span>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: "#app",
+            data: {
+                text: "",
+                list: [
+                ]
+            },
+            methods: {
+                publish() {
+                    if (this.text == "") {
+                        alert("请输入评论内容");
+                        return;
+                    }
+                    this.list.push(this.text);
+                    this.text="";
+                },
+                delpub(index) {
+                    this.list.splice(index,1);
+                },
+                send() {
+                    this.publish();
+                },
+                clear() {
+                    this.text="";
+                }
+            }
+        })
+    </script>
+</body>
+</html>

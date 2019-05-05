@@ -1,0 +1,26 @@
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    list-style: none;
+}
+
+.tab {
+    width:  200px;
+    height:  200px;
+    border: 1px solid #000;
+}
+
+.tab .header {
+    height:  30px;
+    border-bottom: 1px solid #000;
+    display: flex;
+    align-items: center;
+}
+
+.buttons {
+    height: 40px;
+    padding-top:10px;
+}
