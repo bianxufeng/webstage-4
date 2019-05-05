@@ -6,17 +6,64 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>开关</title>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <style>
+        label {
+            display: block;
+            width: 40px;
+            height: 20px;
+            border:1px solid #000;
+            border-radius: 20px/20px;
+            background: gray;
+            position: relative;
+        }
+        label div {
+            width: 20px;
+            height: 20px;
+            border-radius: 20px/20px;
+            background:#fff;
+            position: absolute;
+            left: 0;
+            right: 0;
+            transition-property: all;
+            transition-duration: 0.2s;				
+        }			
+        input:checked+label {
+            background: blue;
+        }
+        input:checked+label div {
+            left: 20px;		
+            right: 0;		
+        }			
+        input+label {
+            background: gray;
+        }
+        input+label div {
+            left: 0px;	
+            right: 0;
+        }			
+        input {
+            display: none;
+        }
+    </style>    
 </head>
 <body>
     <div id="app">
-        
+		<input type="checkbox" id="a1" v-model="checked" @click="click"/>
+		<label for="a1">
+			<div></div>
+		</label>        
     </div>
 
     <script>
         const vm = new Vue({
             el: '#app',
             data: {
-              
+              checked: false
+            },
+            methods: {
+                click() {
+                    console.log(this.checked);
+                }
             }
         })
     </script>
