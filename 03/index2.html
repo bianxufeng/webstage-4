@@ -11,7 +11,14 @@
 <body>
     <div id="app">
         <div class="tab">
-            <div class="header">源列表</div>
+            <div class="header">
+                <input 
+                    type="checkbox" 
+                    name="c1" 
+                    v-model="arr1Checked" 
+                    @click="checkClick" 
+                />源列表
+            </div>
             <div class="content">
                 <ul>
                     <li v-for="item in arr1">
@@ -29,7 +36,14 @@
             <button id="rightBtn" @click="toRight"> > </button>
         </div> 
         <div class="tab">
-            <div class="header">目的列表</div>
+            <div class="header">
+                <input 
+                    type="checkbox" 
+                    name="c2" 
+                    v-model="arr2Checked" 
+                    @click="checkClick" 
+                />目的列表
+            </div>
             <div class="content">
                 <ul>
                     <li v-for="item in arr2">
@@ -47,8 +61,8 @@
         const vm = new Vue({
             el: '#app',
             data: {
-              arr1AllChecked: false,
-              arr2AllChecked: false,
+              arr1Checked: false,
+              arr2Checked: false,
               arr1 : [
                 {
                     name: '选项1',
@@ -87,9 +101,11 @@
             methods: {
                 toLeft() {
                     this.changeArr(this.arr2, this.arr1);
+                    this.arr2Checked = false;
                 },
                 toRight() {
                     this.changeArr(this.arr1, this.arr2);
+                    this.arr1Checked = false;
                 },
                 changeArr(source,target) {
                     for(let i=source.length-1;i>=0;i--) {
@@ -100,6 +116,19 @@
                             });
                             source.splice(i,1);
                         }
+                    }
+                },
+                checkClick(e) {
+                    let arr,flag;
+                    if (e.target.name== "c1") {
+                        arr = this.arr1;
+                        flag = !this.arr1Checked;
+                    } else if (e.target.name == "c2") {
+                        arr = this.arr2;
+                        flag = !this.arr2Checked;
+                    }
+                    for(let i=0;i<arr.length;i++) {
+                        arr[i].checked = flag;
                     }
                 }
             }

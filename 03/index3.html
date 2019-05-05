@@ -27,7 +27,7 @@
             transition-property: all;
             transition-duration: 0.2s;				
         }			
-        input:checked+label {
+        /* input:checked+label {
             background: blue;
         }
         input:checked+label div {
@@ -40,17 +40,42 @@
         input+label div {
             left: 0px;	
             right: 0;
-        }			
+        }*/		
         input {
             display: none;
+        } 
+        .labeloff {
+            background: gray;
+        }
+        .labelon {
+            background: blue;
+        }
+        .divoff {
+            left: 0px;	
+            right: 0;
+        }
+        .divon {
+            left: 20px;		
+            right: 0;
         }
     </style>    
 </head>
 <body>
     <div id="app">
-		<input type="checkbox" id="a1" v-model="checked" @click="click"/>
-		<label for="a1">
-			<div></div>
+        <input 
+            type="checkbox" 
+            id="a1" 
+            v-model="checked" 
+            @click="click"
+        />
+        <label 
+            for="a1" 
+            :class="!checked ? 'labeloff' : 'labelon'"
+        >
+            <div 
+                :class="!checked ? 'divoff' : 'divon'"
+            >
+            </div>
 		</label>        
     </div>
 
