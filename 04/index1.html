@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <style>
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        ul {
+            width: 180px;
+            margin-top: 10px;
+            overflow-y: auto;
+            overflow-x: auto;
+            border: 1px solid gray;
+        }
+        li {
+            border: 1px solid gray;
+        }
+        .active {
+            background: gray;
+        }
+        .normal {
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <input 
+            type="text" 
+            v-model="inputData" 
+            id="text1" 
+            @keydown.up.down.enter.prevent="keydown"
+        />
+        <div class="list" v-if="list.length>0" >
+            <ul>
+                <li 
+                    v-for="(item,index) in list"     
+                    v-bind:class="[selectedindex === index ? 'active' : 'normal']"    
+                    @mouseover="selectedindex=index"
+                    @click="add(item)"                                                  
+                >
+                    {{item}}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                inputData: "",
+                selectedindex: 0           
+            },
+            computed: {
+                list() {
+                    var arr = [];
+                    if (this.inputData != "") {
+                        arr.push(this.inputData + "@qq.com");
+                        arr.push(this.inputData + "@163.com");
+                        arr.push(this.inputData + "@gmail.com");
+                    }
+                    return arr;
+                }
+            },
+            methods: {    
+                add(item) {
+                    document.getElementById("text1").value = item;
+                },
+                keydown(event) {
+                    switch(event.keyCode) {
+                        case 38: 
+                            if (this.selectedindex > 0)
+                                this.selectedindex--;
+                            break;
+                        case 40: 
+                            if (this.selectedindex < this.list.length -1)
+                                this.selectedindex++;
+                            break;
+                        case 13: 
+                            document.getElementById("text1").value = this.list[this.selectedindex];
+                            break;
+                    }
+                }      
+            }
+        });
+
+        
+    </script>
+</body>
+</html>
