@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>   
+    <link rel="stylesheet" href="./bootstrap/dist/css/bootstrap.css">     
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+    </div>
+
+    <script>
+        Vue.component('Table', {
+            props: {
+                colums: Array,
+                data: Array,
+                tablestyle: String
+            },
+            template: `
+                <table :class="['table', className]">
+                    <thead>
+                        <tr>
+                            <th 
+                                v-for="item in colums" 
+                                :width="item.width"
+                            >
+                                {{item.title}}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in data">
+                            <td v-for="d in item">{{d}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            computed: {
+                className() {
+                    return "table-" + this.tablestyle;
+                }
+            }
+        })
+
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                colums:[
+                    {
+                        title: '#',
+                        width: '50px'
+                    },
+                    {
+                        title: 'First Name',
+                        width: '200px',
+                    },
+                    {
+                        title: 'Last Name',
+                        width: '200px',
+                    },            
+                    {
+                        title: 'Username',
+                        width: '100px',
+                    },                            
+                ],
+                data:[
+                    ["1",'Mark','Otto','@mdo'],
+                    ["2",'Jacob','Thornton','@fat'],
+                    ["3",'Larry','the Bird','@twitter']
+                ],
+            },
+            template: `
+                <div class="app">
+                    <Table :colums="colums" :data="data" tablestyle="bordered"/></Table>
+
+                    <Table :colums="colums" :data="data" tablestyle="hover"/></Table>
+                </div>
+            `
+        })
+    </script>
+</body>
+</html>
