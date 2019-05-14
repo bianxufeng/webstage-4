@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ISwitch</title>
+    <style>
+        label {
+            display: block;
+            width: 40px;
+            height: 20px;
+            border:1px solid #000;
+            border-radius: 20px/20px;
+            background: gray;
+            position: relative;
+        }
+        label div {
+            width: 20px;
+            height: 20px;
+            border-radius: 20px/20px;
+            background:#fff;
+            position: absolute;
+            left: 0;
+            right: 0;
+            transition-property: all;
+            transition-duration: 0.2s;				
+        }				
+        #a1 {
+            display: none;
+        } 
+        .labeloff {
+            background: gray;
+        }
+        .labelon {
+            background: blue;
+        }
+        .divoff {
+            left: 0px;	
+            right: 0;
+        }
+        .divon {
+            left: 20px;		
+            right: 0;
+        }
+    </style>     
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        
+    </div>
+
+    <script>
+        const ISwitch = {
+            props: {
+                value: Boolean,
+            },
+            data() {
+                return {
+                    checked: this.value,
+                }
+            },
+            watch: {
+                value(v) {
+                    this.checked = v;
+                },
+                checked(v) {
+                    this.$emit("input",v);
+                }
+            },
+            template: `
+                <div>
+                    <input type="checkbox" id="a1" v-model="checked" />
+                    <label for="a1" :class="!checked ? 'labeloff' : 'labelon'">
+                        <div :class="!checked ? 'divoff' : 'divon'">
+                        </div>
+		            </label>
+                </div>		             
+            `
+        }
+
+        const vm = new Vue({
+            el: '#app',
+            data: {
+              checked: false
+            },
+            components: {
+                ISwitch
+            },
+            template: `
+                <div>
+                    父组件: <input type="checkbox" v-model="checked" />
+                    <hr />
+                    子组件: <ISwitch v-model="checked" />
+                </div>
+            `
+        })
+    </script>
+</body>
+</html>

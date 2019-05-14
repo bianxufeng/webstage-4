@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>InputSearch</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        .active {
+            background: rgba(0, 0, 0, .5);
+        }
+    </style>       
+</head>
+<body>
+    <div id="app">
+        
+    </div>
+
+    <script>
+        const InputSearch = {
+            props: {
+                value: String
+            },
+            data() {
+                return {
+                    search: this.value,
+                    selectIndex: 0,                    
+                    userlist: [
+                        '张三',
+                        '李四',
+                        '老王',
+                        '李三',
+                        '小芳',
+                        '小明'
+                    ]                    
+                }
+            },
+            methods: {
+                up(e) {
+                    this.selectIndex--;
+                    if (this.selectIndex <= 0) {
+                        this.selectIndex = 0;
+                    }
+                },
+                down() {
+                    this.selectIndex++;
+                    if (this.selectIndex >= this.searchList.length) {
+                        this.selectIndex = this.searchList.length - 1;
+                    }
+                },
+                enter() {
+                    this.search = this.searchList[this.selectIndex]
+                }
+            },            
+            computed: {
+                searchList() {
+                    if (!this.search) return [];
+                    return this.userlist.filter(username => {
+                        return new RegExp(this.search).test(username)
+                    })   
+                }
+            },      
+            watch: {
+                value(v) {
+                    this.search=v;
+                },
+                search(v) {
+                    this.$emit("input",v);
+                }
+            },                    
+            template: `
+                <div>
+                    <input   
+                        @keydown.enter="enter"
+                        @keydown.prevent.up="up"
+                        @keydown.down="down"
+                        v-model="search" 
+                    />
+                    <ul>
+                        <li
+                            v-for="(username, index) in searchList"
+                            :class="{
+                                active: selectIndex === index
+                            }"
+                        >
+                            {{username}}
+                        </li>
+                    </ul>
+                </div>        
+            `
+
+        }
+
+        const vm = new Vue({
+            el: '#app',
+            data: {
+              search: "三"
+            },
+            components: {
+                InputSearch
+            },
+            template: `
+                <div>
+                    父组件: <input type="text" v-model="search" />
+                    <hr />
+                    子组件: <InputSearch v-model="search" />
+                </div>
+            `
+        })
+    </script>
+</body>
+</html>
