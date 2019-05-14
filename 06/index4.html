@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>插槽</title>
+    <style>
+        .card {
+            width: 500px;
+            height: 300px;
+            border: 1px solid #000;
+            border-radius: 5px;
+        }
+        .card .header {
+            height: 50px;
+            border-bottom: 1px solid #000;
+            display: flex;
+            justify-content: space-between;
+        }
+        .card .content {
+            height: 249px;
+        }
+    </style>    
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        
+    </div>
+
+    <script>
+        const Card = {
+            template: `
+                <div class="card">
+                    <div class="header">
+                        <slot name="header"/>
+                    </div>
+                    <div class="content">
+                        <slot name="content"/>
+                    </div>
+                </div>            
+            `
+        }
+
+        const vm = new Vue({
+            el: '#app',
+            data: {
+              
+            },
+            components: {
+                Card
+            },
+            template: `
+                <Card>
+                    <template slot="header">
+                        <h3>标题</h3>
+                        <button>关闭</button>
+                    </template>
+                    <h4 slot="content">内容</h4>
+                </Card>            
+            `
+        })
+    </script>
+</body>
+</html>
