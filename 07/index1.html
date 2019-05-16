@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        .active {
+            background: rgba(0, 0, 0, .5);
+        }        
+    </style>
+</head>
+<body>
+    <div id="app">
+        
+    </div>
+
+    <script>
+        const Select = {
+            props: {
+                value: String
+            },
+            data() {
+                return {
+                    selectValue: this.value,
+                    show: true,
+                    list: [],
+                    selectIndex: 0,
+                }
+            },
+            watch: {
+                value(v) {
+                    this.selectValue = v;
+                },
+                selectValue(v) {
+                    this.$emit("input",v);
+                }
+            },
+            template: `
+                <div>
+                    <input 
+                        type="text" 
+                        v-model="selectValue"
+                        @keydown.prevent.up="up"
+                        @keydown.prevent.down="down"   
+                        @keydown.prevent.enter="enter"                                         
+                    />
+                    <button @click="handleShow">显示/隐藏</button>
+                    <ul v-if="show">
+                        <slot />
+                    </ul>
+                </div>
+            `,
+            methods: {
+                handleShow() {
+                    console.log(this.show);
+                    this.show = !this.show
+                },
+                up(e) {
+                    console.log('up')
+                    this.selectIndex--;
+                    if (this.selectIndex <= 0) {
+                        this.selectIndex = 0;
+                    }
+                    this.selectValue = this.list[this.selectIndex].value;
+                },
+                down() {
+                    console.log('down')
+                    this.selectIndex++;
+                    if (this.selectIndex >= this.list.length) {
+                        this.selectIndex = this.list.length - 1;
+                    }
+                    this.selectValue = this.list[this.selectIndex].value;
+                },
+                enter() {
+                    console.log('enter');
+                    this.selectValue = this.list[this.selectIndex].value;
+                }            
+            },
+            mounted() {
+                const children = this.$children;
+                console.log(children);                
+                if (Array.isArray(children)) {
+                    const filter =  children.filter(item => {
+                        return item.value;
+                    })
+                    this.list = filter;
+                }
+            },
+
+        }
+
+        const Option = {
+            props: {
+                value: String
+            },
+            template: `
+                <li :class="[{
+                    active: value == selectValue
+                    }]"
+                    @click="handleClick"
+                >
+                    <slot />
+                </li>
+            `,
+            computed: {
+                selectValue() {
+                    return this.$parent.selectValue
+                }
+            },
+            methods: {
+                handleClick() {
+                    this.$parent.selectValue = this.value;
+                }
+            }
+        }
+
+        const vm = new Vue({
+            el: '#app',
+            data: {
+              selectValue: '',
+              list: ['内容1', '内容2', '内容3']
+            },
+            components: {
+                Select,
+                Option
+            },
+            template: `
+                <div class="app">
+                    父组件: {{selectValue}}
+                    <hr />
+                    <Select v-model="selectValue">
+                        <Option 
+                            v-for="item in list"
+                            :value="item"
+                        >
+                        {{item}}
+                        </Option>
+                    </Select>
+                </div>
+            `
+        })
+    </script>
+</body>
+</html>
