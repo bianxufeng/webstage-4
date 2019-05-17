@@ -4,24 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Select</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
     <style>
         ul {
             margin: 0;
             padding: 0;
+            width: 250px;
+            margin-top: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.5);
         }
         li {
             list-style: none;
         }
         .active {
-            background: rgba(0, 0, 0, .5);
+            background: rgba(0, 0, 0, 0.5);
         }        
+        .mouseactive {
+            background: lightblue;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
     <div id="app">
-        
+
     </div>
 
     <script>
@@ -32,9 +38,9 @@
             data() {
                 return {
                     selectValue: this.value,
-                    show: true,
+                    show: false,
                     list: [],
-                    selectIndex: 0,
+                    selectIndex: ''
                 }
             },
             watch: {
@@ -46,107 +52,128 @@
                 }
             },
             template: `
-                <div>
-                    <input 
-                        type="text" 
-                        v-model="selectValue"
-                        @keydown.prevent.up="up"
-                        @keydown.prevent.down="down"   
-                        @keydown.prevent.enter="enter"                                         
-                    />
-                    <button @click="handleShow">显示/隐藏</button>
-                    <ul v-if="show">
-                        <slot />
-                    </ul>
-                </div>
+            <div>
+                <input 
+                    type="text" 
+                    v-model="selectValue" 
+                    @keydown.prevent.up="up"
+                    @keydown.prevent.down="down"   
+                    @keydown.prevent.enter="enter"                     
+                />
+                <button @click="handleShow">{{ show?'隐藏':'显示'}}</button>
+                <ul v-show="show">
+                    <slot />
+                </ul>
+            </div>
             `,
-            methods: {
-                handleShow() {
-                    console.log(this.show);
-                    this.show = !this.show
-                },
-                up(e) {
-                    console.log('up')
-                    this.selectIndex--;
-                    if (this.selectIndex <= 0) {
-                        this.selectIndex = 0;
-                    }
-                    this.selectValue = this.list[this.selectIndex].value;
-                },
-                down() {
-                    console.log('down')
-                    this.selectIndex++;
-                    if (this.selectIndex >= this.list.length) {
-                        this.selectIndex = this.list.length - 1;
-                    }
-                    this.selectValue = this.list[this.selectIndex].value;
-                },
-                enter() {
-                    console.log('enter');
-                    this.selectValue = this.list[this.selectIndex].value;
-                }            
-            },
             mounted() {
-                const children = this.$children;
-                console.log(children);                
+                const children = this.$children;               
                 if (Array.isArray(children)) {
                     const filter =  children.filter(item => {
                         return item.value;
                     })
                     this.list = filter;
                 }
-            },
-
+            },        
+            methods: {
+                handleShow() {
+                    this.show = !this.show;
+                    this.selectIndex = "";
+                },                
+                up() {
+                    if (this.show) {
+                        this.selectIndex--;
+                        if (this.selectIndex < 0) {
+                            this.selectIndex = this.list.length - 1;
+                        }
+                    }
+                },
+                down() {
+                    if (this.show) {
+                        if (this.selectIndex==="") {
+                            this.selectIndex = 0;
+                            return;
+                        }
+                        this.selectIndex++;
+                        if (this.selectIndex > this.list.length -1) {
+                            this.selectIndex = 0;
+                        }
+                    }
+                },
+                enter() {
+                    if (this.show) {
+                        this.selectValue = this.list[this.selectIndex].value;
+                        this.show = false;
+                        this.selectIndex ='';
+                    }
+                }                 
+            }    
         }
 
-        const Option = {
+        const Option= {
             props: {
-                value: String
+                value: String,
+                name: Number
             },
             template: `
-                <li :class="[{
-                    active: value == selectValue
-                    }]"
-                    @click="handleClick"
-                >
-                    <slot />
-                </li>
+            <li 
+                :class="[{
+                    active: value === selectValue
+                },{
+                    mouseactive: name === selectIndex
+                }]"
+                @mouseover="mouseover"
+                @click="handleClick"
+            >
+                <slot />
+            </li>
             `,
             computed: {
                 selectValue() {
                     return this.$parent.selectValue
-                }
+                },
+                selectIndex() {
+                    return this.$parent.selectIndex;
+                }    
             },
             methods: {
+                mouseover() {
+                    this.$parent.selectIndex = this.name;
+                },
                 handleClick() {
                     this.$parent.selectValue = this.value;
-                }
+                    this.$parent.show = false;
+                    this.$parent.selectIndex ='';
+                }                
             }
         }
 
         const vm = new Vue({
             el: '#app',
             data: {
-              selectValue: '',
-              list: ['内容1', '内容2', '内容3']
+                list: ['内容1', '内容2', '内容3'],
+                selectValue: ''
             },
             components: {
                 Select,
                 Option
             },
             template: `
-                <div class="app">
-                    父组件: {{selectValue}}
-                    <hr />
-                    <Select v-model="selectValue">
-                        <Option 
-                            v-for="item in list"
-                            :value="item"
-                        >
+            <div class="app">
+                父组件: {{selectValue}}
+                <hr />
+                 子组件: 
+                 <Select v-model="selectValue">
+                    <Option 
+                        v-for="(item,index) in list"
+                        :value="item"
+                        :name="index"
+                        :key="item"
+                    >
                         {{item}}
-                        </Option>
-                    </Select>
-                </div>
+                    </Option>
+                 </Select>
+            </div>
             `
         })
     </script>
